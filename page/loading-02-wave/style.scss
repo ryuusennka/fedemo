@@ -1,0 +1,57 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  height: 100vh;
+  background: linear-gradient(to bottom, rgb(128, 101, 224), rgb(68, 109, 163));
+}
+
+.main {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  padding: 10px;
+  border: 3px solid darkturquoise;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+}
+
+.wave {
+  width: 200px;
+  height: 200px;
+  background: darkturquoise;
+  color: rgb(31, 126, 128);
+  border-radius: 50%;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+  line-height: 200px;
+  .ripple {
+    position: absolute;
+    left: 50%;
+    bottom: 200px * 1; // 先满上，最后再去除动画的时候才会满上
+    transform: translateX(-50%);
+    transition: bottom .3s linear;
+    width: 200 * 1.5px;
+    height: 200 * 1.5px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 40%;
+    animation: rotate 5s linear infinite;
+  }
+  .rate {
+    position: relative;
+  }
+}
+
+@keyframes rotate {
+  0% {
+    transform: translateX(-50%) rotate(0deg);
+  }
+  100% {
+    transform: translateX(-50%) rotate(360deg);
+  }
+}

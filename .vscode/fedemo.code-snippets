@@ -18,5 +18,23 @@
       "});",
 		],
 		"description": "Log output to console"
-	}
+  },
+  "init html": {
+    "scope": "ejs,html",
+    "prefix": "html",
+    "body": [
+      "<!DOCTYPE html>",
+      "<html lang=\"zh-CN\">",
+      "<head>",
+      "  <meta charset=\"UTF-8\">",
+      "  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">",
+      "  <title>Document</title>",
+      "</head>",
+      "<body>",
+      "$1",
+      "</body>",
+      "</html>",
+    ],
+    "description": "html template"
+  }
 }
