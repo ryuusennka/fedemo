@@ -2,7 +2,7 @@
  * @Author: ryuusennka
  * @Date: 2020-06-01 09:09:31
  * @LastEditors: ryuusennka
- * @LastEditTime: 2020-06-01 12:00:10
+ * @LastEditTime: 2020-06-01 13:04:36
  * @FilePath: /fedemo/gulpfile.js
  * @Description:
  */
@@ -39,7 +39,7 @@ function browserSyncReload(done) {
 
 const js = () =>
   gulp
-    .src('demo/**/*.babel.js')
+    .src('page/**/*.babel.js')
     .pipe(babel())
     .pipe(
       rename(path => {
@@ -51,12 +51,13 @@ const js = () =>
         };
       })
     )
-    .pipe(gulp.dest('demo'))
+    .pipe(gulp.dest('page'))
     .pipe(browsersync.stream());
+
 const css = () => {
   const plugins = [autoprefixer, cssnano];
   return gulp
-    .src('demo/**/*.scss')
+    .src('page/**/*.scss')
     .pipe(sourcemaps.init())
     .pipe(sass().on('error', sass.logError))
     .pipe(postcss(plugins))
@@ -68,14 +69,14 @@ const css = () => {
       }))
     )
     .pipe(sourcemaps.write())
-    .pipe(gulp.dest('demo'))
+    .pipe(gulp.dest('page'))
     .pipe(browsersync.stream());
 };
 
 const watchFile = () => {
-  gulp.watch('demo/**/*.scss', gulp.series(css, browserSyncReload));
-  gulp.watch('demo/**/*.babel.js', gulp.series(js, browserSyncReload));
-  gulp.watch('demo/**/*.html', browserSyncReload);
+  gulp.watch('page/**/*.scss', gulp.series(css, browserSyncReload));
+  gulp.watch('page/**/*.babel.js', gulp.series(js, browserSyncReload));
+  gulp.watch('page/**/*.html', browserSyncReload);
 };
 const build = gulp.parallel(js, css);
 const watch = gulp.parallel(watchFile, browserSync);
