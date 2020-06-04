@@ -2,7 +2,7 @@
  * @Author: ryuusennka
  * @Date: 2020-06-01 09:09:31
  * @LastEditors: ryuusennka
- * @LastEditTime: 2020-06-04 15:20:14
+ * @LastEditTime: 2020-06-04 15:25:21
  * @FilePath: /fedemo/gulpfile.js
  * @Description:
  */
@@ -39,7 +39,7 @@ function browserSyncReload(done) {
   browsersync.reload();
   done();
 }
-const jsSrc = ['src/**/*.js', '!assets/**/*.js'];
+const jsSrc = ['src/**/*.js', '!src/assets/**/*.js'];
 const js = () =>
   gulp
     .src(jsSrc)
@@ -49,7 +49,7 @@ const js = () =>
         // console.log(path); // 看起来像{ dirname: '01', basename: 'index.babel', extname: '.js' }
         return {
           dirname: path.dirname,
-          basename: path.basename.substr(0, path.basename.length - 6),
+          basename: path.basename,
           extname: '.js',
         };
       })
@@ -57,7 +57,7 @@ const js = () =>
     .pipe(gulp.dest('dist'))
     .pipe(browsersync.stream());
 
-const cssSrc = ['src/**/*.scss', '!assets/**/*.scss'];
+const cssSrc = ['src/**/*.scss'];
 const css = () => {
   const plugins = [autoprefixer, cssnano];
   return gulp
@@ -92,9 +92,9 @@ const ejstemp = () =>
     .pipe(gulp.dest('dist'))
     .pipe(browsersync.stream());
 
-const copySrc = ['src/assets/**', '!src/assets/**/*.scss'];
+const copySrc = ['src/assets/**', '!**/*.scss'];
 const copy = () =>
-  gulp.src(copySrc).pipe(gulp.dest('dist')).pipe(browsersync.stream());
+  gulp.src(copySrc).pipe(gulp.dest('dist/assets')).pipe(browsersync.stream());
 
 const watchFile = () => {
   gulp.watch(cssSrc, gulp.series(css, browserSyncReload));
