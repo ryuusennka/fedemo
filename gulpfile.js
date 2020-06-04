@@ -2,7 +2,7 @@
  * @Author: ryuusennka
  * @Date: 2020-06-01 09:09:31
  * @LastEditors: ryuusennka
- * @LastEditTime: 2020-06-04 16:17:55
+ * @LastEditTime: 2020-06-04 17:47:58
  * @FilePath: /fedemo/gulpfile.js
  * @Description:
  */
@@ -104,13 +104,19 @@ const buildIndexDirectory = () => {
   );
   let files = fs.readdirSync(resolve('src'));
   files.splice(files.indexOf('assets'), 1);
+  if (files.indexOf('.DS_Store') > -1)
+    files.splice(files.indexOf('.DS_Store'), 1);
   let dirs = '<ul>';
-  files.forEach(dir => (dirs += `<li><a href="${dir}/index.html">${dir}</a></li>`));
+  files.forEach(
+    dir =>
+      (dirs += `<li><a href="${dir}/index.html">${dir}</a><iframe src="${dir}/index.html" frameborder="0"></iframe></li>`)
+  );
   dirs += '</ul>';
   $('#app').html(dirs);
   fs.writeFileSync(resolve('template-done.html'), $.html());
   return gulp
     .src(resolve('template-done.html'))
+    .pipe(rename('index.html'))
     .pipe(gulp.dest('dist'));
 };
 console.log(buildIndexDirectory());
