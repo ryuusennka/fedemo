@@ -2,7 +2,7 @@
  * @Author: ryuusennka
  * @Date: 2020-06-01 09:09:31
  * @LastEditors: ryuusennka
- * @LastEditTime: 2020-06-04 15:25:21
+ * @LastEditTime: 2020-06-04 15:37:26
  * @FilePath: /fedemo/gulpfile.js
  * @Description:
  */
@@ -27,7 +27,7 @@ function browserSync(done) {
     server: {
       baseDir: resolve('dist'),
       directory: true,
-      index: 'index.html',
+      // index: 'index.html',
     },
     port: 3010,
     ignore: ['gulpfile.js', 'package.json', 'yarn.lock', 'node_modules/'],
@@ -106,3 +106,5 @@ const build = gulp.parallel(js, css, ejstemp, copy);
 const watch = gulp.parallel(watchFile, browserSync);
 
 module.exports = { js, css, ejstemp, copy, build, watch };
+
+// 测试 npx gulp js,npx gulp css, ...
