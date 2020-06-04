@@ -2,7 +2,7 @@
  * @Author: ryuusennka
  * @Date: 2020-06-01 09:09:31
  * @LastEditors: ryuusennka
- * @LastEditTime: 2020-06-04 15:37:26
+ * @LastEditTime: 2020-06-04 16:17:55
  * @FilePath: /fedemo/gulpfile.js
  * @Description:
  */
@@ -19,6 +19,8 @@ const sourcemaps = require('gulp-sourcemaps');
 const browsersync = require('browser-sync').create();
 const ejs = require('gulp-ejs');
 const path = require('path');
+const fs = require('fs');
+const cheerio = require('cheerio');
 const resolve = dir => path.join(__dirname, dir);
 
 // BrowserSync
@@ -96,13 +98,30 @@ const copySrc = ['src/assets/**', '!**/*.scss'];
 const copy = () =>
   gulp.src(copySrc).pipe(gulp.dest('dist/assets')).pipe(browsersync.stream());
 
+const buildIndexDirectory = () => {
+  const $ = cheerio.load(
+    fs.readFileSync('./template.html', { encoding: 'utf-8' })
+  );
+  let files = fs.readdirSync(resolve('src'));
+  files.splice(files.indexOf('assets'), 1);
+  let dirs = '<ul>';
+  files.forEach(dir => (dirs += `<li><a href="${dir}/index.html">${dir}</a></li>`));
+  dirs += '</ul>';
+  $('#app').html(dirs);
+  fs.writeFileSync(resolve('template-done.html'), $.html());
+  return gulp
+    .src(resolve('template-done.html'))
+    .pipe(gulp.dest('dist'));
+};
+console.log(buildIndexDirectory());
+
 const watchFile = () => {
   gulp.watch(cssSrc, gulp.series(css, browserSyncReload));
   gulp.watch(jsSrc, gulp.series(js, browserSyncReload));
   gulp.watch(ejstempSrc, gulp.series(ejstemp, browserSyncReload));
   gulp.watch(copySrc, gulp.series(copy, browserSyncReload));
 };
-const build = gulp.parallel(js, css, ejstemp, copy);
+const build = gulp.parallel(js, css, ejstemp, copy, buildIndexDirectory);
 const watch = gulp.parallel(watchFile, browserSync);
 
 module.exports = { js, css, ejstemp, copy, build, watch };
