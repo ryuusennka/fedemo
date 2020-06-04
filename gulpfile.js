@@ -2,7 +2,7 @@
  * @Author: ryuusennka
  * @Date: 2020-06-01 09:09:31
  * @LastEditors: ryuusennka
- * @LastEditTime: 2020-06-01 17:52:40
+ * @LastEditTime: 2020-06-04 15:20:14
  * @FilePath: /fedemo/gulpfile.js
  * @Description:
  */
@@ -18,12 +18,14 @@ const cssnano = require('cssnano');
 const sourcemaps = require('gulp-sourcemaps');
 const browsersync = require('browser-sync').create();
 const ejs = require('gulp-ejs');
+const path = require('path');
+const resolve = dir => path.join(__dirname, dir);
 
 // BrowserSync
 function browserSync(done) {
   browsersync.init({
     server: {
-      baseDir: __dirname,
+      baseDir: resolve('dist'),
       directory: true,
       index: 'index.html',
     },
@@ -37,10 +39,10 @@ function browserSyncReload(done) {
   browsersync.reload();
   done();
 }
-
+const jsSrc = ['src/**/*.js', '!assets/**/*.js'];
 const js = () =>
   gulp
-    .src('page/**/*.babel.js')
+    .src(jsSrc)
     .pipe(babel())
     .pipe(
       rename(path => {
@@ -52,13 +54,14 @@ const js = () =>
         };
       })
     )
-    .pipe(gulp.dest('page'))
+    .pipe(gulp.dest('dist'))
     .pipe(browsersync.stream());
 
+const cssSrc = ['src/**/*.scss', '!assets/**/*.scss'];
 const css = () => {
   const plugins = [autoprefixer, cssnano];
   return gulp
-    .src('page/**/*.scss')
+    .src(cssSrc)
     .pipe(sourcemaps.init())
     .pipe(sass().on('error', sass.logError))
     .pipe(postcss(plugins))
@@ -70,13 +73,14 @@ const css = () => {
       }))
     )
     .pipe(sourcemaps.write())
-    .pipe(gulp.dest('page'))
+    .pipe(gulp.dest('dist'))
     .pipe(browsersync.stream());
 };
 
+const ejstempSrc = 'src/**/index.ejs';
 const ejstemp = () =>
   gulp
-    .src('page/**/index.ejs')
+    .src(ejstempSrc)
     .pipe(ejs())
     .pipe(
       rename(path => ({
@@ -85,15 +89,20 @@ const ejstemp = () =>
         extname: '.html',
       }))
     )
-    .pipe(gulp.dest('page'))
+    .pipe(gulp.dest('dist'))
     .pipe(browsersync.stream());
 
+const copySrc = ['src/assets/**', '!src/assets/**/*.scss'];
+const copy = () =>
+  gulp.src(copySrc).pipe(gulp.dest('dist')).pipe(browsersync.stream());
+
 const watchFile = () => {
-  gulp.watch('page/**/*.scss', gulp.series(css, browserSyncReload));
-  gulp.watch('page/**/*.babel.js', gulp.series(js, browserSyncReload));
-  gulp.watch('page/**/*.ejs', gulp.series(ejstemp, browserSyncReload));
+  gulp.watch(cssSrc, gulp.series(css, browserSyncReload));
+  gulp.watch(jsSrc, gulp.series(js, browserSyncReload));
+  gulp.watch(ejstempSrc, gulp.series(ejstemp, browserSyncReload));
+  gulp.watch(copySrc, gulp.series(copy, browserSyncReload));
 };
-const build = gulp.parallel(js, css, ejstemp);
+const build = gulp.parallel(js, css, ejstemp, copy);
 const watch = gulp.parallel(watchFile, browserSync);
 
-module.exports = { js, css, ejstemp, build, watch };
+module.exports = { js, css, ejstemp, copy, build, watch };
