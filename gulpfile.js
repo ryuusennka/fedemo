@@ -2,7 +2,7 @@
  * @Author: ryuusennka
  * @Date: 2020-06-01 09:09:31
  * @LastEditors: ryuusennka
- * @LastEditTime: 2020-06-04 17:47:58
+ * @LastEditTime: 2020-09-11 12:48:04
  * @FilePath: /fedemo/gulpfile.js
  * @Description:
  */
@@ -128,6 +128,7 @@ const watchFile = () => {
   gulp.watch(copySrc, gulp.series(copy, browserSyncReload));
 };
 const build = gulp.parallel(js, css, ejstemp, copy, buildIndexDirectory);
+// watch 必须要在源文件改动一下文件才会触发
 const watch = gulp.parallel(watchFile, browserSync);
 
 module.exports = { js, css, ejstemp, copy, build, watch };
